@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: flask
+  name: exo3
+  labels:
+    app: mariadb
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: flask
+        image: luishugueny/flask
+        resources:
+          requests:
+            memory: "48Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "600m"  
+      volumes:
+      - name: volume-mariadb
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+      volumeMounts:
+      - name: volume-mariadb
+        mountPath: /var/lib/mysql
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 80
+    spec:
+      selector:
+      app: flaskapi
+---

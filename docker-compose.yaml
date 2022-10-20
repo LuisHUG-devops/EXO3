@@ -1,0 +1,27 @@
+version: "3"
+services:
+
+  web:
+        build: .
+        image: luishugueny/flask
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/code
+
+  
+  db:
+    image: mariadb:latest
+    container_name: projet-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      # Volume de la base de données
+      - ./db-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+      # MYSQL_ROOT_PASSWORD: XXXXXXXXX
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      # MARIADB_RANDOM_ROOT_PASSWORD: "yes
+
+ 
